@@ -1,0 +1,39 @@
+<view class="check-container">
+  <view class="wrap">
+    <view class="check-tip">
+      <view class="check-tip-p">
+        <image src="../../assets/images/tip.png" mode="cover"></image>
+        检测到您被以下信息关联，请点击确认
+      </view>
+    </view>
+
+    <view class="check-content">
+      <!-- 循环 -->
+      <view class="check-box">
+        <view class="check-box-info">
+          <view class="check-box-info-h">许光汉</view>
+          <view class="check-box-info-p">通用互联/产品部</view>
+        </view>
+        <view class="check-box-bot">
+          <view class="check-box-bot-del">此信息与我无关，删除</view>
+          <view class="health-btn health-btn-submit">确认信息无误</view>
+        </view>
+      </view>
+
+      <view class="check-box">
+        <view class="check-box-info">
+          <view class="check-box-info-h">许光汉</view>
+          <view class="check-box-info-p">通用互联/产品部</view>
+        </view>
+        <view class="check-box-bot">
+          <view class="check-box-bot-del">此信息与我无关，删除</view>
+          <view class="health-btn health-btn-submit">确认信息无误</view>
+        </view>
+      </view>
+
+
+
+    </view>
+  
+  </view>
+</view>

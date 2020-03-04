@@ -1,0 +1,55 @@
+<!--index.wxml-->
+<view class="index-container">
+  <view class="wrap">
+    <view class="index-header-p">出示此二维码记录个人温度</view>
+    <view class="code-content">
+      <view class="code-content-wrap">
+        <view class="code-content-header clearfix">
+          <!-- 头像 -->
+          <image class="userinfo-avatar" wx:if="{{userInfo.avatarUrl}}" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+          <image class="userinfo-avatar" wx:else src="../../assets/images/avatar.png" mode="cover"></image>
+          <view class="code-content-header-p">我的健康码</view>
+        </view>
+        <!-- 二维码 -->
+        <view class="qr-code">
+          <image src="../../assets/images/qr-code-blank.png" mode="cover"></image>
+        </view> 
+      </view>
+
+      <view class="health-btn-con">
+        <view class="health-btn-wrap" wx:if="{{totalBtnShow}}">
+          <view class="health-btn-wrap-userinfo" wx:if="{{healthBtnShow}}">
+            <button class="health-btn health-btn-submit" open-type="getUserInfo" bindgetuserinfo="getUserInfo">生成你的健康码</button>
+            <view class="health-btn-wrap-userinfo-p">
+              <text>1</text>/2
+            </view>
+          </view>
+
+          <view class="health-btn-wrap-phone" wx:else>
+            <button class="health-btn health-btn-green" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">个人信息认证</button>
+            <view class="health-btn-wrap-userinfo-p">
+              <text>2</text>/2
+            </view>
+          
+          </view>
+          
+          
+        </view>
+          
+
+        <view class="temp-record clearfix" wx:else>
+          <view class="temp-record-left">
+            <view class="temp-record-left-h" bindtap="goIdcard">测温记录</view>
+            <view class="temp-record-left-p">36.2℃</view>
+          </view>
+          <view class="temp-record-right">
+            <view class="temp-record-right-h" bindtap="goDetection">更多</view>
+            <view class="temp-record-right-p">20-02-29</view>
+          </view>
+        </view>
+
+      </view>
+    
+    </view>
+  </view>
+</view>

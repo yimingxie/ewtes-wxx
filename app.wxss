@@ -1,0 +1,190 @@
+/**app.wxss**/
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 200rpx 0;
+  box-sizing: border-box;
+}
+
+
+/*清除浮动*/
+.clearfix:after{ 
+  display: block;
+  clear: both;
+  font-size: 0;
+  line-height: 0;
+  height: 0;
+  visibility: hidden;
+  content: '.';
+}
+
+
+page{
+  background: rgb(62,120,254);
+}
+.wrap{
+  padding: 0 40rpx;
+}
+.index-header-p{
+  font-size: 28rpx;
+  color: #fff;
+}
+.code-content{
+  border-radius: 16rpx;
+  background: #fff;
+  margin-top: 72rpx;
+}
+.code-content-wrap{
+  padding: 0 50rpx;
+  box-shadow: 0 1rpx 30rpx -12rpx rgba(155,176,238,0.66);
+}
+.code-content-header{
+  padding-top: 46rpx;
+}
+.code-content-header-p{
+  float: left;
+  line-height: 78rpx;
+  margin-left: 20rpx;
+  font-size: 32rpx;
+  color: #333333;
+}
+.userinfo-avatar{
+  display: block;
+  float: left;
+  width: 78rpx;
+  height: 78rpx;
+  border-radius: 100%;
+}
+.health-btn-con{
+  padding: 50rpx 0;
+}
+.health-btn{
+  width: 420rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 50rpx;
+  font-weight: normal;
+  text-align: center;
+  padding: 0;
+  font-size: 32rpx;
+}
+.health-btn-submit{
+  color: #fff;
+  background-image: linear-gradient(137deg, #3572FF 0%, #3596FF 100%);
+  box-shadow: 0 15rpx 30rpx -12rpx rgba(66,114,255,0.45);
+}
+.health-btn-green{
+  color: #fff;
+  background-image: linear-gradient(137deg, #31EB8A 0%, #26EDAC 100%);
+  box-shadow: 0 15rpx 30rpx -12rpx rgba(66,255,120,0.45);
+}
+.health-btn-call{
+  color: #3572FF;
+  background-image: linear-gradient(137deg, #FFFFFF 0%, #CCDBFF 100%);
+  box-shadow: 0 15rpx 30rpx -12rpx rgba(66,114,255,0.45);
+}
+.qr-code{
+  margin-top: 30rpx;
+  padding-bottom: 46rpx;
+}
+.qr-code image{
+  width: 100%;
+}
+.temp-record{
+  padding: 0 50rpx;
+}
+.temp-record-left{
+  float: left;
+}
+.temp-record-left-h{
+  font-weight: 700;
+  font-size: 32rpx;
+  line-height: 56rpx;
+  color: #34414C;
+}
+.temp-record-left-p,.temp-record-right-p{
+  line-height: 56rpx;
+  font-size: 28rpx;
+  color: #333333;
+}
+.temp-record-right{
+  float: right;
+}
+.temp-record-right-h{
+  line-height: 56rpx;
+  font-size: 28rpx;
+  color: #3572FF;
+}
+.check-tip{
+  text-align: center;
+  margin-top: 30rpx;
+}
+.check-tip-p{
+  display: inline-block;
+  position: relative;
+  font-size: 28rpx;
+  color: #FFFFFF;
+  line-height: 40rpx;
+  padding-left: 36rpx;
+}
+.check-tip image{
+  position: absolute;
+  top: 8rpx;
+  left: 0;
+  display: block;
+  width: 24rpx;
+  height: 24rpx;
+}
+.check-box{
+  background: #FFFFFF;
+  box-shadow: 0 5rpx 27rpx -11rpx rgba(0,37,145,0.51);
+  border-radius: 16rpx;
+  margin-top: 40rpx;
+}
+.check-box-info{
+  padding: 30rpx 10rpx;
+  text-align: center;
+}
+.check-box-info-h{
+  font-size: 48rpx;
+  font-weight: bold;
+  line-height: 60rpx;
+  color: #333333;
+}
+.check-box-info-p{
+  font-size: 32rpx;
+  line-height: 48rpx;
+  color: #666666;
+  margin-top: 10rpx;
+}
+.check-box-bot{
+  text-align: center;
+  padding: 42rpx 0 50rpx;
+  margin: 0 20rpx;
+  border-top: 1px solid #D4D4D4;
+}
+.check-box-bot-del{
+  font-weight: bold;
+  font-size: 28rpx;
+  color: #F56B25;
+  line-height: 44rpx;
+}
+.check-box-bot .health-btn{
+  margin: 36rpx auto 0;
+}
+.health-btn-wrap-userinfo-p{
+  font-size: 28rpx;
+  color: #3572FF;
+  text-align: center;
+  margin-top: 30rpx;
+}
+.health-btn-wrap-phone .health-btn-wrap-userinfo-p{
+  color: #31EB8A;
+}
+.health-btn-wrap-userinfo-p text{
+  font-size: 32rpx;
+  font-weight: bold;
+}
