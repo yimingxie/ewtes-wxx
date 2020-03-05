@@ -2,6 +2,9 @@
 <view class="index-container">
   <view class="wrap">
     <view class="index-header-p">出示此二维码记录个人温度</view>
+    <!-- <view class="index-header-p">
+      <button bindtap="ocrCard">识别身份证</button>
+    </view> -->
     <view class="code-content">
       <view class="code-content-wrap">
         <view class="code-content-header clearfix">
@@ -47,6 +50,8 @@
             <view class="temp-record-right-p">20-02-29</view>
           </view>
         </view>
+
+        <!-- <button class="health-btn health-btn-submit" disabled="{{verfBtnDisabled}}" bindtap="sendVerf">{{verfBtnText}}</button> -->
 
       </view>
     

@@ -12,30 +12,65 @@ Page({
     // --按钮控制--
     totalBtnShow: true,
     healthBtnShow: true,
+
+    // --验证码--
+    second: 60,
+    verfBtnDisabled: false,
+    verfBtnText: '发送验证码',
+
   },
 
   // 跳转
-  goTest: function () {
+  goTest: function() {
     wx.navigateTo({
       url: '../test/test'
     })
   },
 
-  goDetection: function () {
+  goDetection: function() {
     wx.navigateTo({
       url: '../detection/detection'
     })
   },
 
-  goIdcard: function () {
+  goIdcard: function() {
     wx.navigateTo({
       url: '../idcard/idcard'
     })
   },
 
+  // 测试发送验证码
+  // sendVerf: function () {
+  //   const that = this
+  //   console.log('发送验证码', this.data.second)
+
+
+  //   var timer = null;
+  //   timer = setInterval(() => {
+  //     let second = this.data.second - 1
+  //     if (second > 0) {
+  //       this.setData({
+  //         verfBtnDisabled: true,
+  //         second: second,
+  //         verfBtnText: second + '秒后发送验证码'
+  //       })
+  //     } else {
+  //       clearInterval(timer);
+  //       this.setData({
+  //         verfBtnDisabled: false,
+  //         second: 60,
+  //         verfBtnText: '发送验证码'
+  //       })
+  //     }
+  //   }, 1000);
+  // },
+
   // 初始化
-  onLoad: function () {
+  onLoad: function() {
     console.log('首页onload')
+
+
+
 
     /**
      * 1. 存在unionid，请求员工信息；不存在unionid，调用wx.login，进入第二步
@@ -44,14 +79,12 @@ Page({
      */
 
     if (app.globalData.unionId) {
-      
+
       // this.getStaff()
 
 
 
-    } 
-
-    else {
+    } else {
       // 登录
       wx.login({
         success: logRes => {
@@ -79,7 +112,7 @@ Page({
 
           //     })
 
-             
+
           //   }
           // })
 
@@ -95,7 +128,7 @@ Page({
   getStaff() {
 
   },
-  
+
 
   // 授权用户信息弹窗
   getUserInfo: function(e) {
@@ -120,16 +153,14 @@ Page({
 
       })
 
-    } 
-    
-    else {
+    } else {
       console.log('拒绝', e)
       app.globalData.userInfo = {}
       this.setData({
         userInfo: {},
       })
     }
-    
+
   },
 
   // 手机授权弹窗
@@ -138,6 +169,9 @@ Page({
 
     // 请求后端接口返回手机号，成功则查询人员信息，有多名跳转到列表页，没有则直接跳到首页
   },
+
+
+
 
 
 })

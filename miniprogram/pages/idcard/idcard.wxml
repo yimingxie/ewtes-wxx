@@ -1,11 +1,15 @@
 <view class="idcard-container">
   <view class="wrap">
-    <view class="camera-con">
+    <!-- <view class="camera-con">
       <camera class="idcard-camera" wx:if="{{cameraShow}}" device-position="back" flash="off" binderror="error"></camera>
       <image class="camera-img" wx:if="{{imgSrc}}" src="{{imgSrc}}"></image>
     </view>
     
     <view class="idcard-model" wx:if="{{!cameraShow && imgSrc === ''}}">
+      <image src="../../assets/images/idcard-model.png" mode="widthFix"></image>
+    </view> -->
+
+    <view class="idcard-model">
       <image src="../../assets/images/idcard-model.png" mode="widthFix"></image>
     </view>
     <view class="idcard-content">
@@ -13,12 +17,17 @@
       <view class="idcard-content-p">
         <view>生成健康码需要进行实名认证</view>
         <view>请拍摄身份证正面进行认证</view>
+
       </view>
     </view>
     <view class="idcard-btn">
-      <view class="health-btn health-btn-call" wx:if="{{!cameraShow}}" bindtap="openTakePhoto">拍摄身份证</view>
+      <!-- <view class="health-btn health-btn-call" wx:if="{{!cameraShow}}" bindtap="openTakePhoto">拍摄身份证</view>
       <view class="health-btn health-btn-call" wx:else bindtap="takePhoto">拍照</view>
+      -->
+
+      <view class="health-btn health-btn-call" bindtap="photo">拍摄身份证</view>
     </view>
+
   </view>
 
 
