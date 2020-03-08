@@ -6,7 +6,13 @@ Page({
    * 页面的初始数据
    */
   data: {
-    detList: []
+    detList: [],
+    detParams: {
+      "limit": 10,
+      "offset": 1,
+      "search": ""
+    },
+    currentPage: 1
 
   },
 
@@ -14,8 +20,13 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    // TODO分页 直接赋值可能有问题？
+    // this.data.detParams.search = wx.getStorageSync('phoneNumber')
+    this.setData({
+      "detParams.search": wx.getStorageSync('phoneNumber')
+    })
+    this.getDetList()
     
-
   },
 
   /**
@@ -70,6 +81,50 @@ Page({
 
   // 获取测温列表
   getDetList() {
+    wx.showLoading({
+      title: '加载中',
+    })
+    let limit = this.data.detParams.limit * this.data.currentPage
+    this.setData({
+      'detParams.limit': limit
+    })
+    api.getTemperList(this.data.detParams).then(res => {
+      console.log('测温列表', res)
+      wx.hideLoading();
+      this.setData({
+        detList: res.data.records
+      })
 
+    })
+  },
+
+  // 上拉加载
+  onReachBottom() {
+    console.log('触底')
+    // 通过改变limit加载
+    let nextPage = this.data.currentPage + 1
+    this.setData({
+      "currentPage": nextPage
+    })
+    this.getDetList()
+  },
+
+  // 下拉刷新
+  onPullDownRefresh: function () {
+    this.setData({
+      'detParams.limit': 10,
+      'detParams.offset': 1,
+      'currentPage': 1
+    })
+    setTimeout(() => {
+      api.getTemperList(this.data.detParams).then(res => {
+        console.log('下拉刷新测温列表', res)
+        wx.stopPullDownRefresh()
+        this.setData({
+          detList: res.data.records
+        })
+      })
+    }, 500)
+    
   },
 })

@@ -5,9 +5,11 @@
     "pages/test/test",
     "pages/detection/detection",
     "pages/check/check",
-    "pages/idcard/idcard"
+    "pages/idcard/idcard",
+    "pages/idcardCheck/idcardCheck"
   ],
   "window": {
+    "backgroundColor": "#3E78FE",
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#3E78FE",
     "navigationBarTitleText": "健康通行码",

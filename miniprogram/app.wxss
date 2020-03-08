@@ -188,3 +188,10 @@ page{
   font-size: 32rpx;
   font-weight: bold;
 }
+.no-data{
+  text-align: center;
+}
+.no-data-p{
+  padding: 30rpx 0;
+  color: rgba(255, 255, 255, 0.5);
+}

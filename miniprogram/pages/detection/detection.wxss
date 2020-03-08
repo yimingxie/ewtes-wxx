@@ -1,4 +1,7 @@
 /* pages/detection/detection.wxss */
+.det-content{
+  padding-bottom: 30rpx;
+}
 .det-box{
   padding: 0 30rpx;
   background: #4C82FF;

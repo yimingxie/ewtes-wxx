@@ -15,7 +15,8 @@
         </view>
         <!-- 二维码 -->
         <view class="qr-code">
-          <image src="../../assets/images/qr-code-blank.png" mode="cover"></image>
+          <image wx:if="{{healthCode}}" src="{{healthCode}}" mode="widthFix"></image>
+          <image wx:else src="../../assets/images/qr-code-blank.png" mode="widthFix"></image>
         </view> 
       </view>
 
@@ -43,11 +44,11 @@
         <view class="temp-record clearfix" wx:else>
           <view class="temp-record-left">
             <view class="temp-record-left-h" bindtap="goIdcard">测温记录</view>
-            <view class="temp-record-left-p">36.2℃</view>
+            <view class="temp-record-left-p" wx:if="{{!goOcr && detList.length}}">{{temper}}℃</view>
           </view>
           <view class="temp-record-right">
             <view class="temp-record-right-h" bindtap="goDetection">更多</view>
-            <view class="temp-record-right-p">20-02-29</view>
+            <view class="temp-record-right-p" wx:if="{{!goOcr && detList.length}}">{{temperTime}}</view>
           </view>
         </view>
 

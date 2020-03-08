@@ -1,10 +1,13 @@
 <!--pages/detection/detection.wxml-->
 <view class="detection-container">
   <view class="wrap">
-    <view class="det-content">
 
-      <!-- 循环 TODO分页下拉加载 -->
-      <view class="det-box">
+    <view class="no-data" wx:if="{{detList.length === 0}}">
+      <view class="no-data-p">暂无数据</view>
+    </view>
+    <view class="det-content" wx:else>
+
+      <!-- <view class="det-box">
         <view class="det-box-header clearfix">
           <view class="det-box-header-temp">
             <text>35.6</text>℃
@@ -21,29 +24,29 @@
             20-02-25
           </view>
         </view>
-      </view>
+      </view> -->
 
-      <view class="det-box warn">
+      <!-- valid 是否正常 0-异常 1-正常 -->
+      <view class="det-box {{item.valid === 0 ? 'warn' : ''}}" wx:for="{{detList}}" :key="*this">
         <view class="det-box-header clearfix">
           <view class="det-box-header-temp">
-            <text>35.6</text>℃
+            <text>{{item.value}}</text>℃
           </view>
           <view class="det-box-header-resource">来自体温筛查工具</view>
         </view>
         <view class="det-box-con">
           <view class="det-box-con-address">
             <image src="../../assets/images/address.png" mode="cover"></image>
-            深圳市罗湖区春风路101号
+            {{item.address}}
           </view>
           <view class="det-box-con-date">
             <image src="../../assets/images/date.png" mode="cover"></image>
-            20-02-25
+            {{item.time}}
           </view>
         </view>
       </view>
 
-
-
+    
 
     </view>
 

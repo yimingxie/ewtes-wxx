@@ -1,4 +1,8 @@
 // pages/idcard/idcard.js
+import api from '../../utils/api.js'
+const app = getApp()
+const util = require('../../utils/util.js')
+
 Page({
 
   /**
@@ -16,8 +20,6 @@ Page({
    */
   onLoad: function (options) {
     
-
- 
     
 
   },
@@ -137,8 +139,8 @@ Page({
                 idInfo: ocrResult.result
               })
 
-              // TODO 请求接口更新人员身份证信息
-
+              // 判断身份证
+              that.checkIdcard()
 
 
             } else {
@@ -165,7 +167,39 @@ Page({
 
   },
 
-  // TODO 更新人员身份证信息
+  // 请求idcard列表，多条则跳转到确认页，否则直接跳到测温记录页（因为后台已处理成录入了）
+  checkIdcard: function () {
+    let params = {
+      "addr": this.data.idInfo.addr,
+      "gender": this.data.idInfo.gender,
+      "id": this.data.idInfo.id,
+      "name": this.data.idInfo.name,
+      "nationality": this.data.idInfo.nationality,
+      "phone": wx.getStorageSync('phoneNumber'),
+      "unionid": app.globalData.unionId ? app.globalData.unionId : ''
+    }
+    api.getIdcardList(params).then(res => {
+      console.log('请求idcard列表', res)
+      let checkParams = encodeURIComponent(JSON.stringify(params))
+      if (res.data.data) {
+        wx.navigateTo({
+          url: '../idcardCheck/idcardCheck?idInfoParams=' + checkParams
+        });
+      }
+      else {
+        wx.showToast({
+          title: '上传成功',
+          icon: 'success'
+        })
+        wx.navigateTo({
+          url: '../detection/detection?phone=' + app.globalData.phoneNumber
+        });
+
+      }
+
+    })
+
+  },
 
 
   error(e) {
