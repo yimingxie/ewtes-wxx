@@ -112,6 +112,7 @@ page{
 }
 .temp-record-right{
   float: right;
+  text-align: right;
 }
 .temp-record-right-h{
   line-height: 56rpx;

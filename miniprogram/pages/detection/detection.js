@@ -90,10 +90,12 @@ Page({
     })
     api.getTemperList(this.data.detParams).then(res => {
       console.log('测温列表', res)
-      wx.hideLoading();
       this.setData({
-        detList: res.data.records
+        detList: res.data.data.records
       })
+      setTimeout(() => {
+        wx.hideLoading();
+      }, 500)
 
     })
   },
@@ -120,6 +122,10 @@ Page({
       api.getTemperList(this.data.detParams).then(res => {
         console.log('下拉刷新测温列表', res)
         wx.stopPullDownRefresh()
+        wx.showToast({
+          title: '加载成功',
+          icon: 'success'
+        })
         this.setData({
           detList: res.data.records
         })

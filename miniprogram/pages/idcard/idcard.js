@@ -191,9 +191,12 @@ Page({
           title: '上传成功',
           icon: 'success'
         })
-        wx.navigateTo({
-          url: '../detection/detection?phone=' + app.globalData.phoneNumber
-        });
+        setTimeout(() => {
+          wx.navigateTo({
+            url: '../detection/detection?phone=' + app.globalData.phoneNumber
+          });
+        }, 500)
+        
 
       }
 

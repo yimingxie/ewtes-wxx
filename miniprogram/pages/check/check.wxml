@@ -23,14 +23,14 @@
       <view class="check-box" wx:for="{{checkList}}" wx:key="id">
         <view class="check-box-info">
           <view class="check-box-info-h">{{item.name}}</view>
-          <view class="check-box-info-p">{{item.corpName}}/{{item.departmentName}}</view>
+          <view class="check-box-info-p">{{item.corpName ? item.corpName : '--'}}/{{item.departmentName ? item.departmentName : '--'}}</view>
         </view>
         <view class="check-box-bot">
           <view class="check-box-bot-del" bindtap="deleteUser" data-id="{{item.id}}">此信息与我无关，删除</view>
           <view class="health-btn health-btn-submit" bindtap="confirmUser" data-id="{{item.id}}">确认信息无误</view>
         </view>
       </view>
-      
+
 
 
 

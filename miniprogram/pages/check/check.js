@@ -78,7 +78,7 @@ Page({
       console.log('用户列表', res)
       if (res.data.code == 200) {
         this.setData({
-          checkList: res.data.data
+          checkList: res.data.data ? res.data.data : []
         })
       }
     })
@@ -89,7 +89,10 @@ Page({
     const that = this
     let id = e.currentTarget.dataset['id'];
     console.log('删除用户的', id)
-    api.deleteUser(id).then(res => {
+    let params = {
+      'id': id
+    }
+    api.deleteUser(params).then(res => {
       console.log('删除操作', res)
       if (res.data.code == 200) {
         wx.showToast({

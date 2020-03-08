@@ -84,7 +84,7 @@ Page({
       console.log('身份证列表', res)
       if (res.data.code == 200) {
         this.setData({
-          checkIdcardObj: res.data.data
+          checkIdcardObj: res.data.data ? res.data.data : []
         })
       }
     })
@@ -93,9 +93,11 @@ Page({
   // 删除身份证
   deleteIdcard: function (e) {
     const that = this
-    let id = e.currentTarget.dataset['id'];
-    console.log('删除用户的', id)
-    api.deleteIdcard(id).then(res => {
+    console.log('删除用户的', this.data.checkIdcardObj.id)
+    let params = {
+      'id': this.data.checkIdcardObj.id
+    }
+    api.deleteIdcard(params).then(res => {
       console.log('删除操作', res)
       if (res.data.code == 200) {
         wx.showToast({
@@ -109,10 +111,11 @@ Page({
 
   // 确认身份证
   confirmIdcard: function (e) {
-    let infoItem = e.currentTarget.dataset['item'];
-    console.log('确认用户的item', infoItem)
+    // let infoItem = e.currentTarget.dataset['item'];
+    console.log('确认用户的', this.data.checkIdcardObj)
+    console.log('传的身份证', this.data.idInfoParams)
 
-    api.confirmIdcard(infoItem).then(res => {
+    api.confirmIdcard(this.data.idInfoParams).then(res => {
       console.log('确认用户成功', res)
       if (res.data.code == 200) {
         wx.showToast({

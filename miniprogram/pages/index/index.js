@@ -229,6 +229,9 @@ Page({
         // 获取健康码
         this.getHealthCode(res.data.data.id)
 
+        // 获取测温记录
+        this.getDetList()
+
 
         // 没有身份证则需要跳转到OCR才能看测温记录
         let idCard = res.data.data.idCard
@@ -320,7 +323,6 @@ Page({
 
   // 获取测温列表
   getDetList() {
-    let limit = this.data.detParams.limit * this.data.currentPage
     let detParams = {
       "limit": 10,
       "offset": 1,
@@ -330,11 +332,11 @@ Page({
     api.getTemperList(detParams).then(res => {
       console.log('测温列表', res)
       if (res.data.code == 200) {
-        if (res.data.records.length > 0) {
+        if (res.data.data.records.length > 0) {
           this.setData({
-            detList: res.data.records,
-            temper: res.data.records[0].value,
-            temperTime: res.data.records[0].time,
+            detList: res.data.data.records,
+            temper: res.data.data.records[0].value,
+            temperTime: res.data.data.records[0].time,
           })
         } else {
           this.setData({

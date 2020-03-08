@@ -29,8 +29,8 @@ export default {
   },
 
   // 删除用户
-  deleteUser(id) {
-    return http.delete(`${url1}/user/info?id=${id}`)
+  deleteUser(params) {
+    return http.del(`${url1}/user/info`, params)
   },
 
   // 确认用户
@@ -49,8 +49,8 @@ export default {
   },
 
   // 删除身份证信息
-  deleteIdcard(id) {
-    return http.delete(`${url1}/user/card/info?id=${id}`)
+  deleteIdcard(params) {
+    return http.del(`${url1}/user/card/info`, params)
   },
 
   // 查询测温记录列表
