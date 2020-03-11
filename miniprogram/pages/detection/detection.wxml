@@ -1,9 +1,11 @@
 <!--pages/detection/detection.wxml-->
+
+<wxs src="../../utils/filter.wxs" module="filter" />
 <view class="detection-container">
   <view class="wrap">
 
     <view class="no-data" wx:if="{{detList.length === 0}}">
-      <view class="no-data-p">暂无数据</view>
+      <view class="no-data-p">暂无测温数据</view>
     </view>
     <view class="det-content" wx:else>
 
@@ -41,7 +43,7 @@
           </view>
           <view class="det-box-con-date">
             <image src="../../assets/images/date.png" mode="cover"></image>
-            {{item.time}}
+            {{filter.subFormatTime(item.time)}}
           </view>
         </view>
       </view>

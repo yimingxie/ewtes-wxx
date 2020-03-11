@@ -195,6 +195,10 @@ Page({
           wx.navigateTo({
             url: '../detection/detection?phone=' + app.globalData.phoneNumber
           });
+          // 刷新首页
+          const pages = getCurrentPages()
+          const perpage = pages[pages.length - 2]
+          perpage.indexOnload()  
         }, 500)
         
 

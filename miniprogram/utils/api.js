@@ -1,6 +1,7 @@
 import http from './http.js'
 
-const url1 = 'http://192.168.100.8:8007/ewtes/wx'
+// const url1 = 'http://192.168.100.8:8007/ewtes/wx'
+const url1 = 'https://iot.gidomino.com/ewtes/wx'
 
 export default {
   // 获取unionId

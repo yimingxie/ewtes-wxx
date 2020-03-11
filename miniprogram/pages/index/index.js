@@ -65,16 +65,21 @@ Page({
 
   // 初始化
   onLoad: function(options) {
+    this.indexOnload(options)
+  },
+
+  // 封装加载首页
+  indexOnload(options) {
     const that = this
     console.log('首页onload', app.globalData)
 
     // 监听来自check页面的按钮参数
-    if (options.check && options.check == 'confirm') {
+    if (options && options.check && options.check == 'confirm') {
       this.setData({
         totalBtnShow: false
       })
     }
-    
+
 
     // 通过手机号缓存判断
     if (wx.getStorageSync('phoneNumber')) {
@@ -105,6 +110,11 @@ Page({
                 // TODO放哪？
                 this.getUserDetail()
 
+                setTimeout(() => {
+                  wx.hideLoading()
+                }, 300)
+
+
 
               }
             })
@@ -123,19 +133,13 @@ Page({
           // 发送 res.code 到后台换取 openId, sessionKey, unionId
           console.log('登录logRes', logRes)
           app.globalData.code = logRes.code
+          setTimeout(() => {
+            wx.hideLoading()
+          }, 300)
 
         }
       })
     }
-
-    
-
-    /**
-     * 1. 存在unionid，请求员工信息；不存在unionid，调用wx.login，进入第二步
-     * 2. 重新登录，更新登录态，获取(unionid, session_key check等)，继续请求员工信息
-     * 
-     */
-
 
 
 
@@ -212,7 +216,6 @@ Page({
       wx.setStorageSync('phoneNumber', res.result)
 
       // 调用创建用户（TODO 应该是查询用户，如果是存在一条以上就跳转，否则回到首页，按钮消失）
-      // this.creatUser()
       this.getUserList()
 
     }).catch(err => {
@@ -293,7 +296,7 @@ Page({
       console.log('创建用户', res)
       if (res.data.code == 200) {
         wx.showToast({
-          title: '成功',
+          title: '创建成功',
           icon: 'success'
         })
         this.setData({
@@ -307,6 +310,7 @@ Page({
   },
 
 
+
   // 跳转到测温记录
   goDetection: function () {
     // 没有身份证就跳到ocr
@@ -318,6 +322,11 @@ Page({
       wx.navigateTo({
         url: '../detection/detection?phone=' + app.globalData.phoneNumber
       })
+      // 刷新首页
+      const pages = getCurrentPages()
+      const perpage = pages[pages.length - 1]
+      perpage.indexOnload()  
+      
     }
   },
 
@@ -396,6 +405,14 @@ Page({
 
       }
     })
+  },
+
+  // 更新健康码
+  refreshCode() {
+    wx.showLoading({
+      title: '更新中',
+    })
+    this.indexOnload()
   }
 
 

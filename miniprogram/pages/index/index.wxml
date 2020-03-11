@@ -1,4 +1,7 @@
 <!--index.wxml-->
+<!-- 引用过滤器 -->
+<wxs src="../../utils/filter.wxs" module="filter" />
+
 <view class="index-container">
   <view class="wrap">
     <view class="index-header-p">出示此二维码记录个人温度</view>
@@ -15,7 +18,7 @@
         </view>
         <!-- 二维码 -->
         <view class="qr-code">
-          <image wx:if="{{healthCode}}" src="{{healthCode}}" mode="widthFix"></image>
+          <image wx:if="{{healthCode}}" src="{{healthCode}}" bindtap="refreshCode" mode="widthFix"></image>
           <image wx:else src="../../assets/images/qr-code-blank.png" mode="widthFix"></image>
         </view> 
       </view>
@@ -48,7 +51,7 @@
           </view>
           <view class="temp-record-right">
             <view class="temp-record-right-h" bindtap="goDetection">更多</view>
-            <view class="temp-record-right-p" wx:if="{{!goOcr && detList.length}}">{{temperTime}}</view>
+            <view class="temp-record-right-p" wx:if="{{!goOcr && detList.length}}">{{filter.subFormatTime(temperTime)}}</view>
           </view>
         </view>
 

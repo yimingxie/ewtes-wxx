@@ -84,6 +84,42 @@ Page({
     })
   },
 
+  // 创建用户
+  creatUser() {
+    let params = {
+      "avatarUrl": app.globalData.userInfo.avatarUrl,
+      "city": app.globalData.userInfo.city,
+      "country": app.globalData.userInfo.country,
+      "gender": app.globalData.userInfo.gender,
+      "language": app.globalData.userInfo.language,
+      "nickName": app.globalData.userInfo.nickName,
+      "openId": app.globalData.openId ? app.globalData.openId : '',
+      "phone": app.globalData.phoneNumber,
+      "province": app.globalData.userInfo.province,
+      "unionId": app.globalData.unionId ? app.globalData.unionId : ''
+    }
+    console.log('创建用户参数', params)
+    api.creatUser(params).then(res => {
+      console.log('创建用户', res)
+      if (res.data.code == 200) {
+        wx.showToast({
+          title: '创建成功',
+          icon: 'success'
+        })
+        // 跳转到首页，并控制按钮消失
+        setTimeout(() => {
+          wx.navigateTo({
+            url: "../index/index?check='confirm'",
+          })
+        }, 500)
+        
+  
+      }
+
+    })
+
+  },
+
   // 删除用户
   deleteUser: function (e) {
     const that = this
@@ -95,11 +131,19 @@ Page({
     api.deleteUser(params).then(res => {
       console.log('删除操作', res)
       if (res.data.code == 200) {
-        wx.showToast({
-          title: '删除成功',
-          icon: 'success'
-        })
-        that.getUserList()
+        
+        if (that.data.checkList.length == 1) {
+          that.getUserList()
+          // 删除了最后一条，就直接创建
+          that.creatUser()
+          
+        } else {
+          wx.showToast({
+            title: '删除成功',
+            icon: 'success'
+          })
+          that.getUserList()
+        }
 
       }
     })

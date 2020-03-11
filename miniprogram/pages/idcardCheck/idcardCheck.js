@@ -105,6 +105,11 @@ Page({
           icon: 'success'
         })
         that.getIdcardList()
+        setTimeout(() => {
+          wx.navigateTo({
+            url: '../detection/detection?phone=' + app.globalData.phoneNumber
+          });
+        }, 500)
       }
     })
   },
