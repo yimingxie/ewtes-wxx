@@ -11,10 +11,14 @@ Page({
     userInfo: {}, // 微信查出的详情
     staffInfo: '', // 员工信息库
     healthCode: '',
+    statusBarHeight: app.globalData.statusBarHeight,
+    screenHeight: wx.getSystemInfoSync()['screenHeight'],
+    programShow: false,
 
     // --按钮控制--
     totalBtnShow: true,
     healthBtnShow: true,
+
 
     // --测温记录--
     goOcr: true,
@@ -36,6 +40,20 @@ Page({
   goIdcard: function() {
     wx.navigateTo({
       url: '../idcard/idcard'
+    })
+  },
+
+  // 跳转到测温记录
+  goDet: function () {
+    wx.navigateTo({
+      url: '../detection/detection'
+    })
+  },
+
+  // 跳转到测温记录（测试）
+  goDetTest: function () {
+    wx.navigateTo({
+      url: '../detectionTest/detection'
     })
   },
 
@@ -65,13 +83,40 @@ Page({
 
   // 初始化
   onLoad: function(options) {
+
+    // 首次加载，不允许show执行，置为false
+    this.data.programShow = false
+
     this.indexOnload(options)
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function () {
+    console.log('onshow展示了')
+    if (this.data.programShow) {
+      console.log('onshow执行了')
+      this.indexOnload()
+    }
+
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide: function () {
+    console.log('onhide隐藏了，show状态要置为true')
+    this.data.programShow = true
   },
 
   // 封装加载首页
   indexOnload(options) {
     const that = this
     console.log('首页onload', app.globalData)
+
+    // 云函数
+    this.cloudUserInfo()
 
     // 监听来自check页面的按钮参数
     if (options && options.check && options.check == 'confirm') {
@@ -81,12 +126,10 @@ Page({
     }
 
 
+
     // 通过手机号缓存判断
     if (wx.getStorageSync('phoneNumber')) {
-      // 有手机号则请求人员信息库 this.getUserDetail()
-      // 疑惑？头像用wx还是查出的员工表头像
       console.log('有缓存', wx.getStorageSync('phoneNumber'))
-
 
       wx.getSetting({
         success: authRes => {
@@ -97,24 +140,86 @@ Page({
               success: res => {
                 console.log('授权判断的用户信息', res)
                 // 可以将 res 发送给后台解码出 unionId
-                // 获取unionId后，查询人员信息表，更新userInfo，健康码，测温记录等
+                // 获取unionId后，查询人员信息表，更新userInfo，畅通码，测温记录等
                 app.globalData.userInfo = res.userInfo
                 that.setData({
-                  userInfo: res.userInfo,
-                  totalBtnShow: false
+                  userInfo: res.userInfo
                 })
 
-                // 云函数
-                this.cloudUserInfo()
+                // 请求授权接口判断是否有身份证
+                let accParams = {
+                  "openid": wx.getStorageSync('openId')
+                }
+                api.getAccStatus(accParams).then(accRes => {
+                  console.log('后端授权接口', accRes)
+                  
+                  
+                  // ask | 0: 需要请求授权, 1: 手机号码已授权, 2: 身份证号码已授权
+                  if (accRes.data.data.ask === 2) {
+                    // 获取畅通码
+                    this.getHealthCode(accRes.data.data.id)
+
+                    this.setData({ 
+                      totalBtnShow: false,
+                      goOcr: false,
+
+                    })
+                    // 获取测温记录
+                    this.getDetList()
+                  } 
+
+                  // ask已各种授权，跳转到确认页面
+                  else {
+                    wx.showLoading({
+                      title: '加载中',
+                    })
+                    
+                    // 请求用户确认接口，判断是否需要确认
+                    let params = {
+                      "openid": wx.getStorageSync('openId'),
+                      "phone": wx.getStorageSync('phoneNumber')
+                    }
+                    api.getUserListV3(params).then(userRes => {
+                      wx.hideLoading()
+                      console.log('确认用户列表', userRes)
+                      // type | 1: 不需确认直接创建并刷新加载首页, 2: 需要跳到确认页面
+                      if (userRes.data.code == 200) {
+                        if (userRes.data.data.type == 1) {
+                          // that.indexOnload()
+                          // 获取畅通码
+                          this.getHealthCode(userRes.data.data.id)
+
+                          this.setData({ 
+                            totalBtnShow: false,
+                            healthBtnShow: false,
+                            goOcr: true,
+                          })
+                        }
+                        else {
+                          this.setData({
+                            totalBtnShow: true,
+                            healthBtnShow: false,
+                            goOcr: true
+                          })
+                          wx.navigateTo({
+                            url: '../check/check?infoRes=' + encodeURIComponent(JSON.stringify(userRes.data.data.info))
+                          });
+                        }
+
+                      }
+
+                    })
+
+
+                  }
+                })
 
                 // TODO放哪？
-                this.getUserDetail()
+                // this.getUserDetailV2()
 
                 setTimeout(() => {
                   wx.hideLoading()
                 }, 300)
-
-
 
               }
             })
@@ -157,6 +262,7 @@ Page({
         //设置openid
         app.globalData.openId = res.result.openid ? res.result.openid : ''
         app.globalData.unionId = res.result.unionid ? res.result.unionid : ''
+        wx.setStorageSync('openId', res.result.openid)
       }
     })
   },
@@ -174,19 +280,6 @@ Page({
       this.cloudUserInfo()
 
 
-      // 请求后端接口获取unionid
-      // 获得unionid后，去查询人员信息库。有信息则直接首页完整形态，没有则开始走手机授权流程
-      let param = {
-        'code': app.globalData.code,
-        'encryptedData': e.detail.encryptedData,
-        'iv': e.detail.iv,
-      }
-      // api.getUnionId(param).then(unionRes => {
-      //   console.log('传code', unionRes)
-      //   // TODO 获取到unionId，存全局，并调用请求员工 this.getStaff()
-
-      // })
-
     } else {
       console.log('拒绝', e)
       app.globalData.userInfo = {}
@@ -199,7 +292,13 @@ Page({
 
   // 手机授权弹窗
   getPhoneNumber: function(e) {
+    const that = this
     console.log('手机', e)
+    if (e.detail.errMsg && e.detail.errMsg == '"getPhoneNumber:fail user deny"') return
+
+    wx.showLoading({
+      title: '加载中',
+    })
 
     // 请求后端接口返回手机号，成功则查询人员信息，有多名跳转到列表页，没有则直接跳到首页
     wx.cloud.callFunction({
@@ -215,33 +314,87 @@ Page({
       // })
       wx.setStorageSync('phoneNumber', res.result)
 
-      // 调用创建用户（TODO 应该是查询用户，如果是存在一条以上就跳转，否则回到首页，按钮消失）
-      this.getUserList()
+      // 请求用户确认接口，判断是否需要确认
+      let params = {
+        "openid": wx.getStorageSync('openId'),
+        "phone": app.globalData.phoneNumber
+      }
+      api.getUserListV3(params).then(userRes => {
+        wx.hideLoading()
+
+        console.log('确认用户列表', userRes)
+        // type | 1: 不需确认直接创建并刷新加载首页, 2: 需要跳到确认页面
+        if (userRes.data.code == 200) {
+          if (userRes.data.data.type == 1) {
+            that.indexOnload()
+          }
+          else {
+            wx.navigateTo({
+              url: '../check/check?infoRes=' + encodeURIComponent(JSON.stringify(userRes.data.data.info))
+            });
+          }
+
+        }
+        else {
+          wx.showToast({
+            title: userRes.data.message,
+            icon: 'none'
+          })
+        }
+
+      })
+
+
+      // this.setData({
+      //   userInfo: {},
+      //   totalBtnShow: true,
+      //   healthBtnShow: true,
+      // })
+
 
     }).catch(err => {
-      console.error('手机号', err);
+      console.error('获取失败', err);
+      wx.hideLoading()
     })
   },
 
+
   // 查询用户详情
-  getUserDetail(phone) {
-    let phoneNumber = phone ? phone : wx.getStorageSync('phoneNumber')
-    api.getUser(phoneNumber).then(res => {
+  getUserDetailV2() {
+    let params = {
+      "avatarUrl": this.data.userInfo.avatarUrl,
+      "city": this.data.userInfo.city,
+      "country": this.data.userInfo.country,
+      "gender": this.data.userInfo.gender,
+      "language": this.data.userInfo.language,
+      "nickName": this.data.userInfo.nickName,
+      "openId": app.globalData.openId ? app.globalData.openId : '',
+      "phone": wx.getStorageSync('phoneNumber'),
+      "province": this.data.userInfo.province,
+      "unionId": app.globalData.unionId ? app.globalData.unionId : ''
+    }
+
+    api.getUserDetailV2(params).then(res => {
       console.log('用户详情', res)
-      if (res.data.data) {
-        // 获取健康码
+      if (res.data.data && res.data.data.unionid) {
+        
+        // 获取畅通码
         this.getHealthCode(res.data.data.id)
 
         // 获取测温记录
         this.getDetList()
 
+        this.setData({
+          totalBtnShow: false
+        })
 
-        // 没有身份证则需要跳转到OCR才能看测温记录
+
+        // 根据来源则需要跳转到OCR才能看测温记录，1是小程序，3是网站导入
         let idCard = res.data.data.idCard
-        if (idCard) {
-          this.setData({goOcr: false})
+        if (idCard && res.data.data.source == 1) {
+          this.setData({ goOcr: false })
         } else {
-          this.setData({goOcr: true})
+          this.setData({ goOcr: true })
         }
       } else {
         this.setData({
@@ -251,24 +404,25 @@ Page({
         })
 
       }
-      
+
     })
   },
 
   // 查询用户列表
   getUserList() {
-    api.getUserList(app.globalData.phoneNumber).then(res => {
+    api.getUserList(wx.getStorageSync('phoneNumber')).then(res => {
       console.log('首页查询用户列表', res)
       if (res.data.code == 200) {
         // 用户记录多条，则跳转到check
         if (res.data.data) {
           wx.navigateTo({
-            url: '../check/check?phone=' + app.globalData.phoneNumber
+            url: '../check/check?phone=' + wx.getStorageSync('phoneNumber')
           });
         } 
         else {
           
           this.creatUser()
+
         }
 
       }
@@ -287,7 +441,7 @@ Page({
       "language": this.data.userInfo.language,
       "nickName": this.data.userInfo.nickName,
       "openId": app.globalData.openId ? app.globalData.openId : '',
-      "phone": app.globalData.phoneNumber,
+      "phone": wx.getStorageSync('phoneNumber'),
       "province": this.data.userInfo.province,
       "unionId": app.globalData.unionId ? app.globalData.unionId : ''
     }
@@ -302,6 +456,9 @@ Page({
         this.setData({
           totalBtnShow: false
         })
+
+        // 创建成功后查询用户信息
+        this.getUserDetail()
 
       }
 
@@ -320,7 +477,7 @@ Page({
       })
     } else {
       wx.navigateTo({
-        url: '../detection/detection?phone=' + app.globalData.phoneNumber
+        url: '../detection/detection?phone=' + wx.getStorageSync('phoneNumber')
       })
       // 刷新首页
       const pages = getCurrentPages()
@@ -385,7 +542,7 @@ Page({
 
 
 
-  // 获取健康码
+  // 获取畅通码
   getHealthCode(id) {
     if (!id) return
     const that = this
@@ -394,9 +551,8 @@ Page({
     }
     api.getQr(params).then(res => {
       if (res.data.code == 200) {
-        console.log('健康码res', res)
-        // that.formatImg(res.data.data)
-        // base64转src图片，真机待测试？
+        console.log('畅通码res', res)
+        // base64转src图片
         base64src(res.data.data, res => {
           this.setData({
             healthCode: res
@@ -407,7 +563,7 @@ Page({
     })
   },
 
-  // 更新健康码
+  // 更新畅通码
   refreshCode() {
     wx.showLoading({
       title: '更新中',

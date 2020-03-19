@@ -1,0 +1,73 @@
+/* pages/detection/detection.wxss */
+.det-content{
+  padding-bottom: 30rpx;
+}
+.det-box{
+  padding: 0 30rpx;
+  background: #4C82FF;
+  box-shadow: 0 7rpx 30rpx -12rpx rgba(53,114,255,0.40);
+  border-radius: 16rpx;
+  margin-top: 36rpx;
+}
+.det-box.warn{
+  background-image: linear-gradient(137deg, #F56B25 0%, #F39535 100%);
+}
+.det-box-header-temp{
+  float: left;
+  line-height: 100rpx;
+  font-size: 28rpx;
+  color: #FFFFFF;
+}
+.det-box-header-temp text{
+  font-size: 42rpx;
+}
+.det-box-header-resource{
+  float: right;
+  line-height: 100rpx;
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.55);
+}
+.det-box-con{
+  border-top: 1px solid rgba(255,255,255,0.20);
+  padding: 30rpx 0;
+}
+.det-box-con-address{
+  position: relative;
+  line-height: 32rpx;
+  font-size: 28rpx;
+  color: #FFFFFF;
+  padding-left: 46rpx;
+  background-size: 32rpx;
+}
+.det-box-con-address image{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32rpx;
+  height: 32rpx;
+}
+.det-box-con-date{
+  position: relative;
+  line-height: 32rpx;
+  font-size: 28rpx;
+  color: #FFFFFF;
+  padding-left: 46rpx;
+  background-size: 32rpx;
+  margin-top: 20rpx;
+}
+.det-box-con-date image{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.intro {
+  margin: 30px;
+  text-align: center;
+}
+
+.trans {
+  transition: .2s;
+}

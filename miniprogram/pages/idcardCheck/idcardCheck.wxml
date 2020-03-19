@@ -1,10 +1,18 @@
 <!--pages/idcardCheck/idcardCheck.wxml-->
-<view class="check-container idcardCheck-container">
+<view class="custom-title-center" style="padding-top:{{statusBarHeight}}px">
+  <view class="custom-back" bindtap="back" style="padding-top:{{statusBarHeight}}px">
+    <image src="../../assets/images/back.png" mode="widthFix"></image>
+  </view>
+  <view class="wrap">确认信息</view>
+</view>
+
+
+<view class="check-container idcardCheck-container" style="padding-top:{{statusBarHeight+45}}px">
+
   <view class="wrap">
     <view class="check-tip">
       <view class="check-tip-p">
-        <image src="../../assets/images/tip.png" mode="cover"></image>
-        检测到您被以下信息关联，请点击确认
+        <image src="../../assets/images/tip.png" mode="scaleToFill"></image>检测到您被以下信息关联，请点击确认
       </view>
     </view>
 
@@ -21,14 +29,15 @@
         </view>
       </view> -->
 
-      <view class="check-box" wx:if="{{JSON.stringify(checkIdcardObj) !== '{}'}}">
+
+      <view class="check-box" wx:if="{{checkFlag}}">
         <view class="check-box-info">
           <view class="check-box-info-h">{{checkIdcardObj.name}}</view>
           <view class="check-box-info-p">{{checkIdcardObj.corpName ? checkIdcardObj.corpName : '--'}}/{{checkIdcardObj.departmentName ? checkIdcardObj.departmentName : '--'}}</view>
         </view>
         <view class="check-box-bot">
-          <view class="check-box-bot-del" bindtap="deleteIdcard">此信息与我无关，删除</view>
-          <view class="health-btn health-btn-submit" bindtap="confirmIdcard" data-item="{{checkIdcardObj}}">确认信息无误</view>
+          <view class="check-box-bot-del" data-type="{{false}}" bindtap="confirmIdcardV3">此信息与我无关，删除</view>
+          <view class="health-btn health-btn-submit" bindtap="confirmIdcardV3" data-type="{{true}}">确认信息无误</view>
         </view>
       </view>
 

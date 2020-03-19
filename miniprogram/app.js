@@ -1,6 +1,7 @@
 //app.js
 App({
   onLaunch: function () {
+    console.log('gggg', wx.getSystemInfoSync())
     
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
@@ -14,6 +15,7 @@ App({
         env: 'ewstes-wx'
       })
     }
+    
 
 
     // 加载用户登录状态
@@ -27,7 +29,7 @@ App({
     //         success: res => {
     //           console.log('app.js用户信息', res)
     //           // 可以将 res 发送给后台解码出 unionId
-    //           // 获取unionId后，查询人员信息表，更新userInfo，健康码，测温记录等
+    //           // 获取unionId后，查询人员信息表，更新userInfo，畅通码，测温记录等
     //           this.globalData.userInfo = res.userInfo
           
 
@@ -47,6 +49,7 @@ App({
 
   // 全局变量
   globalData: {
+    statusBarHeight: wx.getSystemInfoSync()['statusBarHeight'],
     userInfo: null,
     phoneNumber: '',
     code: '', // 登录时获取

@@ -9,6 +9,7 @@
 		"minified": true,
 		"newFeature": true,
 		"coverView": true,
+		"nodeModules": true,
 		"autoAudits": false,
 		"showShadowRootInWxmlPanel": true,
 		"scopeDataCheck": false,
@@ -19,12 +20,11 @@
 			"ignore": [],
 			"disablePlugins": [],
 			"outputPath": ""
-		},
-		"nodeModules": true
+		}
 	},
 	"appid": "wx27600a95a065ab4f",
 	"projectname": "wx_app",
-	"libVersion": "2.8.1",
+	"libVersion": "2.10.1",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"cloudfunctionTemplateRoot": "cloudfunctionTemplate",
@@ -59,8 +59,20 @@
 				},
 				{
 					"id": 1,
+					"name": "pages/detectionTest/detection",
+					"pathName": "pages/detectionTest/detection",
+					"scene": null
+				},
+				{
+					"id": -1,
 					"name": "pages/detection/detection",
 					"pathName": "pages/detection/detection",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/check/check",
+					"pathName": "pages/check/check",
 					"scene": null
 				}
 			]

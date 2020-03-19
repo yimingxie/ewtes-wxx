@@ -1,11 +1,14 @@
 import api from '../../utils/api.js'
+const app = getApp()
+
 
 Page({
 
   /**
-   * 页面的初始数据
+ * 页面的初始数据
    */
   data: {
+    statusBarHeight: app.globalData.statusBarHeight,    
     detList: [],
     detParams: {
       "limit": 10,
@@ -26,6 +29,8 @@ Page({
       "detParams.search": wx.getStorageSync('phoneNumber')
     })
     this.getDetList()
+
+    
     
   },
 
@@ -41,7 +46,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+  
   },
 
   /**
@@ -90,12 +95,15 @@ Page({
     })
     api.getTemperList(this.data.detParams).then(res => {
       console.log('测温列表', res)
-      this.setData({
-        detList: res.data.data.records
-      })
-      setTimeout(() => {
-        wx.hideLoading();
-      }, 500)
+      if (res.data.data) {
+        this.setData({
+          detList: res.data.data.records
+        })
+        setTimeout(() => {
+          wx.hideLoading();
+        }, 500)
+      }
+      
 
     })
   },
@@ -132,5 +140,22 @@ Page({
       })
     }, 500)
     
+  },
+
+  // 返回上一页（首页）
+  back() {
+    // wx.navigateTo({
+    //   url: '../index/index'
+    // })
+
+    let pages = getCurrentPages()
+    console.log('pages', pages.reverse())
+    let i = pages.findIndex(item => {
+      return item.route == 'pages/index/index'
+    })
+    wx.navigateBack({
+      delta: i
+    })
+
   },
 })

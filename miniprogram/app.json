@@ -6,13 +6,14 @@
     "pages/detection/detection",
     "pages/check/check",
     "pages/idcard/idcard",
-    "pages/idcardCheck/idcardCheck"
+    "pages/idcardCheck/idcardCheck",
+    "pages/detectionTest/detection"
   ],
   "window": {
     "backgroundColor": "#3E78FE",
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#3E78FE",
-    "navigationBarTitleText": "健康通行码",
+    "navigationBarTitleText": "",
     "navigationBarTextStyle": "white"
   },
   "style": "v2",

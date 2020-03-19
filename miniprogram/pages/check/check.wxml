@@ -1,9 +1,17 @@
-<view class="check-container">
+
+<view class="custom-title-center" style="padding-top:{{statusBarHeight}}px">
+  <view class="custom-back" bindtap="back" style="padding-top:{{statusBarHeight}}px">
+    <image src="../../assets/images/back.png" mode="widthFix"></image>
+  </view>
+  <view class="wrap">确认信息</view>
+</view>
+
+
+<view class="check-container" style="padding-top:{{statusBarHeight+45}}px">
   <view class="wrap">
     <view class="check-tip">
       <view class="check-tip-p">
-        <image src="../../assets/images/tip.png" mode="cover"></image>
-        检测到您被以下信息关联，请点击确认
+        <image src="../../assets/images/tip.png" mode="scaleToFill"></image>检测到您被以下信息关联，请点击确认
       </view>
     </view>
 
@@ -13,6 +21,9 @@
         <view class="check-box-info">
           <view class="check-box-info-h">许光汉</view>
           <view class="check-box-info-p">通用互联/产品部</view>
+        </view>
+        <view style="position: relative;">
+          <view class="border"></view>
         </view>
         <view class="check-box-bot">
           <view class="check-box-bot-del">此信息与我无关，删除</view>
@@ -25,9 +36,13 @@
           <view class="check-box-info-h">{{item.name}}</view>
           <view class="check-box-info-p">{{item.corpName ? item.corpName : '--'}}/{{item.departmentName ? item.departmentName : '--'}}</view>
         </view>
+        <view style="position: relative;">
+          <view class="border"></view>
+        </view>
+
         <view class="check-box-bot">
-          <view class="check-box-bot-del" bindtap="deleteUser" data-id="{{item.id}}">此信息与我无关，删除</view>
-          <view class="health-btn health-btn-submit" bindtap="confirmUser" data-id="{{item.id}}">确认信息无误</view>
+          <view class="check-box-bot-del" bindtap="confirmUserV3" data-id="{{item.id}}" data-type="{{false}}">此信息与我无关，删除</view>
+          <view class="health-btn health-btn-submit" bindtap="confirmUserV3" data-id="{{item.id}}"  data-type="{{true}}">确认信息无误</view>
         </view>
       </view>
 

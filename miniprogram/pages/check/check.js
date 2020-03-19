@@ -8,9 +8,11 @@ Page({
    * 页面的初始数据
    */
   data: {
-    checkList: []
-
+    statusBarHeight: app.globalData.statusBarHeight,    
+    checkList: [],
+    test: {}
   },
+
 
   /**
    * 生命周期函数--监听页面加载
@@ -19,7 +21,15 @@ Page({
     console.log('check', options)
 
     // 人员列表
-    this.getUserList()
+    // this.getUserList()
+    let tempList = []
+    let listObj = JSON.parse(decodeURIComponent(options.infoRes))
+    tempList.push(listObj)
+
+    this.setData({
+      'checkList': tempList
+    })
+
 
   },
 
@@ -120,7 +130,7 @@ Page({
 
   },
 
-  // 删除用户
+  // 删除用户（废弃）
   deleteUser: function (e) {
     const that = this
     let id = e.currentTarget.dataset['id'];
@@ -148,6 +158,29 @@ Page({
       }
     })
     
+
+  },
+
+  // 删除用户V2
+  deleteUserV2: function (e) {
+    const that = this
+    let id = e.currentTarget.dataset['id'];
+    console.log('删除用户的', id)
+    let params = {
+      'id': id
+    }
+    api.deleteUserV2(params).then(res => {
+      console.log('删除操作', res)
+      if (res.data.code == 200) {
+        this.setData({
+          'checkList': []
+        })
+        // 创建用户
+        that.creatUser()
+
+      }
+    })
+
 
   },
 
@@ -185,6 +218,58 @@ Page({
     })
 
 
+  },
+
+  // 确认和否定用户信息V3
+  confirmUserV3: function (e) {
+    let id = e.currentTarget.dataset['id'];
+    let type = e.currentTarget.dataset['type'];
+    console.log('确认用户的id', id, type)
+    let params = {
+      "openid": wx.getStorageSync('openId'),
+      "id": id,
+      "opt": type
+    } 
+ 
+    api.confirmUserV3(params).then(res => {
+      console.log('确认和否定操作', res)
+      if (res.data.code == 200) {
+        // type: true为确定，false为删除
+        if (type) {
+          wx.showToast({
+            title: '确认成功',
+            icon: 'success'
+          })
+        }
+        // type: false为删除
+        else {
+          this.setData({
+            'checkList': []
+          })
+          wx.showToast({
+            title: '创建成功',
+            icon: 'success'
+          })
+        }
+
+        // 跳转到首页，并控制按钮消失
+        setTimeout(() => {
+          wx.navigateTo({
+            url: "../index/index?check='confirm'",
+          })
+        }, 500)
+
+      }
+    })
+
+
+  },
+
+  // 返回上一页
+  back() {
+    wx.navigateBack({
+      delta: 1
+    })
   },
 
   

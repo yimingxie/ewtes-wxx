@@ -8,8 +8,11 @@ Page({
    * 页面的初始数据
    */
   data: {
+    statusBarHeight: app.globalData.statusBarHeight,
     checkIdcardObj: {}, // 只会存在一个身份证
-    idInfoParams: {}
+    idInfoParams: {},
+    ocrParams: {},
+    checkFlag: true,
 
   },
 
@@ -19,12 +22,14 @@ Page({
   onLoad: function (options) {
     console.log('check', options)
     this.setData({
-      'idInfoParams': JSON.parse(decodeURIComponent(options.idInfoParams))
+      'idInfoParams': JSON.parse(decodeURIComponent(options.idInfoParams)),
+      'ocrParams': JSON.parse(decodeURIComponent(options.ocrParams)),
+      'checkIdcardObj': JSON.parse(decodeURIComponent(options.idInfoParams))
     })
     
 
     // 身份证列表
-    this.getIdcardList()
+    // this.getIdcardList()
 
   },
 
@@ -95,7 +100,9 @@ Page({
     const that = this
     console.log('删除用户的', this.data.checkIdcardObj.id)
     let params = {
-      'id': this.data.checkIdcardObj.id
+      // 'id': this.data.checkIdcardObj.id,
+      'idCard': this.data.checkIdcardObj.idCard,
+      'phone': wx.getStorageSync('phoneNumber'),
     }
     api.deleteIdcard(params).then(res => {
       console.log('删除操作', res)
@@ -134,6 +141,90 @@ Page({
     })
 
   },
+
+
+  // 确认和否认身份证V3
+  confirmIdcardV3(e) {
+    const that = this
+    console.log('确认用户的', this.data.checkIdcardObj)
+    console.log('用户的id: ', this.data.checkIdcardObj.id)
+    let type = e.currentTarget.dataset['type'] // true:确认,false:否认
+
+    let params = {
+      "phone": wx.getStorageSync('phoneNumber'),
+      "id": this.data.checkIdcardObj.id,
+      "opt": type,
+      "ocr": JSON.stringify(this.data.ocrParams)
+    }
+    api.confirmIdcardV3(params).then(res => {
+      if (type && res.data.code == 200) {
+        wx.showToast({
+          title: '确认成功',
+          icon: 'success'
+        })
+
+        // setTimeout(() => {
+        //   wx.navigateTo({
+        //     url: '../index/index'
+        //   });
+        // }, 500)
+        
+        setTimeout(() => {
+          wx.navigateTo({
+            url: '../detection/detection?phone=' + app.globalData.phoneNumber
+          });
+          // 刷新首页
+          const pages = getCurrentPages()
+          const perpage = pages[pages.length - 3]
+          perpage.indexOnload()
+        }, 500)
+      }
+      else if (!type && res.data.code == 200) {
+        wx.showToast({
+          title: '删除成功',
+          icon: 'success'
+        })
+        that.setData({
+          checkIdcardObj: {},
+          checkFlag: false,
+        })
+        
+        // setTimeout(() => {
+        //   wx.navigateTo({
+        //     url: '../index/index'
+        //   });
+        // }, 500)
+
+        setTimeout(() => {
+          wx.navigateTo({
+            url: '../detection/detection?phone=' + app.globalData.phoneNumber
+          });
+          // 刷新首页
+          const pages = getCurrentPages()
+          const perpage = pages[pages.length - 3]
+          perpage.indexOnload()
+        }, 500)
+      }
+      else {
+        wx.showToast({
+          title: res.data.message,
+          icon: 'none'
+        })
+
+      }
+
+    })
+
+  },
+
+  // 返回上一页
+  back() {
+    wx.navigateBack({
+      delta: 1
+    })
+  },
+
+
 
 
 })

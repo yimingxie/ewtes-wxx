@@ -12,6 +12,7 @@ Page({
     cameraShow: false,
     imgSrc: '',
     idInfo: '',
+    timer: null,
 
   },
 
@@ -35,6 +36,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    
 
   },
 
@@ -42,6 +44,8 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
+    const that = this
+    clearInterval(that.data.timer)
 
   },
 
@@ -49,6 +53,8 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
+    const that = this
+    clearInterval(that.data.timer)
 
   },
 
@@ -116,50 +122,85 @@ Page({
           mask: true
         })
 
-        wx.cloud.callFunction({
-          name: 'orc', // 迷之名字
-          data: {
-            imgType: res.tempFilePaths[0].split('.').pop(),
-            imgArrayBuffer: fs.readFileSync(res.tempFilePaths[0])
-          },
-          success(ocrResult) {
-            console.log('调用成功', ocrResult)
-            // result:
-            // addr: "广东省深圳市福田区**"
-            // errCode: 0
-            // errMsg: "openapi.ocr.idcard:ok"
-            // gender: "男"
-            // id: "44030619**"
-            // name: "谢**"
-            // nationality: "汉"
-            // type: "Front"
-            wx.hideLoading()
-            if (ocrResult.result.errCode === 0) {
-              that.setData({
-                idInfo: ocrResult.result
-              })
+        // 图片转base64
+        let base64 = wx.getFileSystemManager().readFileSync(res.tempFilePaths[0], 'base64')
+        let base64Url = 'data:image/jpg;base64,' + base64
+        console.log('bbb', base64Url)
 
-              // 判断身份证
-              that.checkIdcard()
+        let ocrParams = {
+          "openid": app.globalData.openId,
+          "phone": wx.getStorageSync('phoneNumber'),
+          "data": base64Url
+        }
 
+        api.getOcr(ocrParams).then(ocrRes => {
+          console.log('身份证ocrRes', ocrRes)
+          wx.hideLoading()
+          if (ocrRes.data.code == 200) {
 
-            } else {
-              wx.showToast({
-                title: '识别失败，请重新拍摄',
-                icon: 'none'
-              })
-            }
+            // 判断身份证
+            that.checkIdcardV3(ocrRes.data)
 
-          },
-          fail(e) {
-            console.log('调用失败', e)
-            wx.hideLoading()
+          } else {
             wx.showToast({
-              title: '识别失败，请重新拍摄',
+              title: ocrRes.data.message,
               icon: 'none'
             })
+
           }
+        }).catch(ocrErr => {
+          console.log('错误', ocrErr)
+
         })
+
+        return
+
+
+        // 云调用（废弃）
+        // wx.cloud.callFunction({
+        //   name: 'orc', // 迷之名字
+        //   data: {
+        //     imgType: res.tempFilePaths[0].split('.').pop(),
+        //     imgArrayBuffer: fs.readFileSync(res.tempFilePaths[0])
+        //   },
+        //   success(ocrResult) {
+        //     console.log('调用成功', ocrResult)
+        //     // result:
+        //     // addr: "广东省深圳市福田区**"
+        //     // errCode: 0
+        //     // errMsg: "openapi.ocr.idcard:ok"
+        //     // gender: "男"
+        //     // id: "44030619**"
+        //     // name: "谢**"
+        //     // nationality: "汉"
+        //     // type: "Front"
+        //     wx.hideLoading()
+        //     if (ocrResult.result.errCode === 0) {
+        //       that.setData({
+        //         idInfo: ocrResult.result
+        //       })
+
+        //       // 判断身份证
+        //       that.checkIdcard()
+
+
+        //     } else {
+        //       wx.showToast({
+        //         title: '识别失败，请重新拍摄',
+        //         icon: 'none'
+        //       })
+        //     }
+
+        //   },
+        //   fail(e) {
+        //     console.log('调用失败', e)
+        //     wx.hideLoading()
+        //     wx.showToast({
+        //       title: '识别失败，请重新拍摄',
+        //       icon: 'none'
+        //     })
+        //   }
+        // })
 
       }
     })
@@ -167,6 +208,9 @@ Page({
 
   },
 
+
+
+  // 废弃
   // 请求idcard列表，多条则跳转到确认页，否则直接跳到测温记录页（因为后台已处理成录入了）
   checkIdcard: function () {
     let params = {
@@ -191,7 +235,7 @@ Page({
           title: '上传成功',
           icon: 'success'
         })
-        setTimeout(() => {
+        this.data.timer = setTimeout(() => {
           wx.navigateTo({
             url: '../detection/detection?phone=' + app.globalData.phoneNumber
           });
@@ -205,6 +249,36 @@ Page({
       }
 
     })
+
+  },
+
+  // 判断身份证跳转
+  checkIdcardV3(data) {
+    let dataInfo = data
+    console.log('判断身份证', dataInfo)
+    if (dataInfo.data.type == 1) {
+      wx.showToast({
+        title: '上传成功',
+        icon: 'success'
+      })
+      this.data.timer = setTimeout(() => {
+        wx.navigateTo({
+          url: '../detection/detection?phone=' + app.globalData.phoneNumber
+        });
+        // 刷新首页
+        const pages = getCurrentPages()
+        const perpage = pages[pages.length - 2]
+        perpage.indexOnload()
+      }, 500)
+    }
+    // 跳转到身份证确认页
+    else {
+      let checkParams = encodeURIComponent(JSON.stringify(dataInfo.data.info))
+      let ocrParams = encodeURIComponent(JSON.stringify(dataInfo.data.ocr))
+      wx.navigateTo({
+        url: '../idcardCheck/idcardCheck?idInfoParams=' + checkParams + '&ocrParams=' + ocrParams
+      });
+    }
 
   },
 

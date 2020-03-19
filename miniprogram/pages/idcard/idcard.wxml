@@ -15,7 +15,7 @@
     <view class="idcard-content">
       <view class="idcard-content-h">实名认证</view>
       <view class="idcard-content-p">
-        <view>生成健康码需要进行实名认证</view>
+        <view>生成畅通码需要进行实名认证</view>
         <view>请拍摄身份证正面进行认证</view>
 
       </view>
