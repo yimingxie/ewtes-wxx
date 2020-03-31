@@ -267,6 +267,14 @@ Page({
 
   // 返回上一页
   back() {
+
+    var pages = getCurrentPages();   //当前页面
+
+    var prevPage = pages[pages.length - 2];   //上一页面
+
+    prevPage.setData({
+      returnFlag: true
+    })
     wx.navigateBack({
       delta: 1
     })

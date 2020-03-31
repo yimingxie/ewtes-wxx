@@ -22,6 +22,7 @@
   bindrefresherrestore="onRestore"
   bindrefresherabort="onAbort"
 >
+
   <view wx:for="{{arr}}" style="display: flex; height: 100px;">
     <image src="https://images.unsplash.com/photo-1565699894576-1710004524ba?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1832&q=80"></image>
     <image src="https://images.unsplash.com/photo-1566402441483-c959946717ed?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1600&q=80"></image>
@@ -83,6 +84,16 @@
 
     </view>
 
+  </view>
+
+
+  <!-- 测试 -->
+  <view>
+    <view class="test-box">
+      <input class="weui-input" placeholder="测试Input"/>
+    </view>
+
+  
   </view>
 
 </view>

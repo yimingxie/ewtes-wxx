@@ -1,0 +1,13 @@
+<!--components/popup/popup.wxml-->
+<!-- 弹窗 -->
+<view class="popup" wx:if="{{popShow}}">
+  <view class="popup-bg" bindtap="hidePopup"></view>
+  <view class="popup-content">
+    <view>自制弹窗</view>
+  </view>
+  <view>
+    <view bindtap="cancelPopup" bindtap="cancelPopup">{{canceltitle}}</view>
+    <view bindtap="confirmPopup" bindtap="confirmPopup">{{confirmtitle}}</view>
+  </view>
+
+</view>

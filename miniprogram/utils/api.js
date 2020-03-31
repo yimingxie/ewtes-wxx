@@ -1,10 +1,10 @@
 import http from './http.js'
 
-const url1 = 'http://192.168.100.45:8007/ewtes/wx'
+// const url1 = 'http://192.168.100.45:8007/ewtes/wx'
 // const url1 = 'https://iot.gidomino.com/ewtes/wx'
 
 // 正式版
-// const url1 = 'https://www.ewtes.com/ewtes/wx'
+const url1 = 'https://www.ewtes.com/ewtes/wx'
 
 // 体验版
 // const url1 = 'https://pt.ewtes.com/ewtes/wx'

@@ -3,6 +3,7 @@ import api from '../../utils/api.js'
 const app = getApp()
 const util = require('../../utils/util.js')
 
+
 Page({
 
   /**
@@ -14,12 +15,25 @@ Page({
     idInfo: '',
     timer: null,
 
+
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+
+    // wx.showModal({
+    //   title: '都为',
+    //   content: 'wer',
+    //   success(res) {
+    //     if (res.confirm) {
+    //       console.log('用户点击确定')
+    //     } else if (res.cancel) {
+    //       console.log('用户点击取消')
+    //     }
+    //   }
+    // })
     
     
 
@@ -266,9 +280,9 @@ Page({
           url: '../detection/detection?phone=' + app.globalData.phoneNumber
         });
         // 刷新首页
-        const pages = getCurrentPages()
-        const perpage = pages[pages.length - 2]
-        perpage.indexOnload()
+        // const pages = getCurrentPages()
+        // const perpage = pages[pages.length - 2]
+        // perpage.indexOnload()
       }, 500)
     }
     // 跳转到身份证确认页
@@ -286,4 +300,20 @@ Page({
   error(e) {
     console.log(e.detail)
   },
+
+  // 跳转到用户服务协议
+  goUserAgree() {
+    wx.navigateTo({
+      url: '../agreement/agreement',
+    })
+  },
+
+  // 跳转到隐私协议
+  goSecretAgree() {
+    wx.navigateTo({
+      url: '../agreementSecret/agreementSecret',
+    })
+  }, 
+
+
 })

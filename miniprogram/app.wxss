@@ -260,3 +260,18 @@ page{
   border-radius: 40rpx;
   border: 1px solid #D4D4D4;
 }
+
+.aggreement-content{
+  padding: 50rpx;
+  line-height: 1.5;
+  color: #fff;
+}
+.aggreement-content-title{
+  text-align: center;
+  font-size: 36rpx;
+}
+.aggreement-content-article{
+  font-size: 30rpx;
+}
+
+

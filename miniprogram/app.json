@@ -7,7 +7,9 @@
     "pages/check/check",
     "pages/idcard/idcard",
     "pages/idcardCheck/idcardCheck",
-    "pages/detectionTest/detection"
+    "pages/detectionTest/detection",
+    "pages/agreement/agreement",
+    "pages/agreementSecret/agreementSecret"
   ],
   "window": {
     "backgroundColor": "#3E78FE",

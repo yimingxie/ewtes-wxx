@@ -1,5 +1,5 @@
 const fsm = wx.getFileSystemManager();
-const FILE_BASE_NAME = 'tmp_base64src'; //自定义文件名
+const FILE_BASE_NAME = 'tmp_base64src' + Date.now(); //自定义文件名
 
 function base64src(base64data, cb) {
   const [, format, bodyData] = /data:image\/(\w+);base64,(.*)/.exec(base64data) || [];

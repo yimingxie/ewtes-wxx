@@ -26,7 +26,8 @@
           <!-- 二维码 -->
           <view class="qr-code">
             <view wx:if="{{healthCode}}">
-              <image src="{{healthCode}}" bindtap="refreshCode" mode="widthFix"></image>
+              <!-- <image src="{{healthCode}}" bindtap="refreshCode" mode="widthFix"></image> -->
+              <image src="data:image/png;base64,{{healthCode}}" bindtap="refreshCode" mode="widthFix"></image>
             </view>
             <view class="qr-code-blank" wx:else>
               <image src="../../assets/images/qr-code-blank.png" mode="widthFix"></image>
@@ -55,6 +56,7 @@
             
           </view>
             
+
 
           <view class="temp-record clearfix" wx:else>
             <view class="temp-record-left">

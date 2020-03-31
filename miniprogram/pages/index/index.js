@@ -14,6 +14,10 @@ Page({
     statusBarHeight: app.globalData.statusBarHeight,
     screenHeight: wx.getSystemInfoSync()['screenHeight'],
     programShow: false,
+    returnFlag: false, // 控制页面不更新
+
+    // --定时器--
+    timer: null,
 
     // --按钮控制--
     totalBtnShow: true,
@@ -98,8 +102,8 @@ Page({
     if (this.data.programShow) {
       console.log('onshow执行了')
       this.indexOnload()
+      this.setTimer()
     }
-
   },
 
   /**
@@ -108,12 +112,23 @@ Page({
   onHide: function () {
     console.log('onhide隐藏了，show状态要置为true')
     this.data.programShow = true
+    clearInterval(this.data.timer)
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload: function () {
+    clearInterval(this.data.timer)
   },
 
   // 封装加载首页
   indexOnload(options) {
     const that = this
     console.log('首页onload', app.globalData)
+
+    if (this.data.returnFlag) return
+
 
     // 云函数
     this.cloudUserInfo()
@@ -157,16 +172,29 @@ Page({
                   // ask | 0: 需要请求授权, 1: 手机号码已授权, 2: 身份证号码已授权
                   if (accRes.data.data.ask === 2) {
                     // 获取畅通码
-                    this.getHealthCode(accRes.data.data.id)
+                    this.getHealthCode(wx.getStorageSync('phoneNumber'))
 
                     this.setData({ 
                       totalBtnShow: false,
                       goOcr: false,
-
                     })
                     // 获取测温记录
                     this.getDetList()
+                    // 开启定时器
+                    this.setTimer()
+
                   } 
+                  // else if (accRes.data.data.ask === 0) {
+                  //   // 重置整个页面
+                  //   this.setData({
+                  //     userInfo: {},
+                  //     totalBtnShow: true,
+                  //     healthBtnShow: true,
+                  //     goOcr: true,
+                  //     healthCode: ''
+                  //   })
+
+                  // }
 
                   // ask已各种授权，跳转到确认页面
                   else {
@@ -177,7 +205,10 @@ Page({
                     // 请求用户确认接口，判断是否需要确认
                     let params = {
                       "openid": wx.getStorageSync('openId'),
-                      "phone": wx.getStorageSync('phoneNumber')
+                      "phone": wx.getStorageSync('phoneNumber'),
+                      "nickname": app.globalData.userInfo.nickName,
+                      "sex": app.globalData.userInfo.gender,
+                      "avatar": app.globalData.userInfo.avatarUrl
                     }
                     api.getUserListV3(params).then(userRes => {
                       wx.hideLoading()
@@ -187,7 +218,9 @@ Page({
                         if (userRes.data.data.type == 1) {
                           // that.indexOnload()
                           // 获取畅通码
-                          this.getHealthCode(userRes.data.data.id)
+                          this.getHealthCode(wx.getStorageSync('phoneNumber'))
+                          // 开启定时器
+                          this.setTimer()
 
                           this.setData({ 
                             totalBtnShow: false,
@@ -214,8 +247,6 @@ Page({
                   }
                 })
 
-                // TODO放哪？
-                // this.getUserDetailV2()
 
                 setTimeout(() => {
                   wx.hideLoading()
@@ -245,12 +276,18 @@ Page({
         }
       })
     }
-
-
-
   },
 
-
+  // 开启定时器，更新二维码
+  setTimer() {
+    const that = this
+    let interval = 60 * 1000
+    clearInterval(this.data.timer)
+    this.data.timer = setInterval(() => {
+      console.log('定时器开启')
+      that.getHealthCode(wx.getStorageSync('phoneNumber'))
+    }, interval)
+  },
 
   // 通过云函数获取appid,openid,unionid
   cloudUserInfo() {
@@ -317,7 +354,10 @@ Page({
       // 请求用户确认接口，判断是否需要确认
       let params = {
         "openid": wx.getStorageSync('openId'),
-        "phone": app.globalData.phoneNumber
+        "phone": app.globalData.phoneNumber,
+        "nickname": app.globalData.userInfo.nickName,
+        "sex": app.globalData.userInfo.gender,
+        "avatar": app.globalData.userInfo.avatarUrl
       }
       api.getUserListV3(params).then(userRes => {
         wx.hideLoading()
@@ -379,7 +419,7 @@ Page({
       if (res.data.data && res.data.data.unionid) {
         
         // 获取畅通码
-        this.getHealthCode(res.data.data.id)
+        this.getHealthCode(wx.getStorageSync('phoneNumber'))
 
         // 获取测温记录
         this.getDetList()
@@ -480,9 +520,9 @@ Page({
         url: '../detection/detection?phone=' + wx.getStorageSync('phoneNumber')
       })
       // 刷新首页
-      const pages = getCurrentPages()
-      const perpage = pages[pages.length - 1]
-      perpage.indexOnload()  
+      // const pages = getCurrentPages()
+      // const perpage = pages[pages.length - 1]
+      // perpage.indexOnload()  
       
     }
   },
@@ -543,21 +583,27 @@ Page({
 
 
   // 获取畅通码
-  getHealthCode(id) {
-    if (!id) return
+  getHealthCode(phone) {
+    if (!phone) return
     const that = this
     let params = {
-      'id': id
+      'phone': phone
     }
     api.getQr(params).then(res => {
       if (res.data.code == 200) {
         console.log('畅通码res', res)
+        let qrStr = res.data.data ? res.data.data : ''
+        
         // base64转src图片
-        base64src(res.data.data, res => {
-          this.setData({
-            healthCode: res
-          })
-        });
+        this.setData({
+          healthCode: qrStr.replace(/[\r\n]/g, '')
+        })
+
+      } else {
+        wx.showToast({
+          title: res.data.message,
+          icon: 'none'
+        })
 
       }
     })

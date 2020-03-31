@@ -24,7 +24,7 @@
 .idcard-btn{
   position: fixed;
   left: 0;
-  bottom: 130rpx;
+  bottom: 150rpx;
   width: 100%;
   text-align: center;
 }
@@ -38,4 +38,17 @@
   width: 100%;
   height: 240px;
   border-radius: 16rpx;
+}
+.idcard-go{
+  display: inline-block;
+}
+.idcard-agreement{
+  position: fixed;
+  left: 0;
+  bottom: 80rpx;
+  width: 100%;
+  text-align: center;
+  font-size: 24rpx;
+  color: #fff;
+  opacity: 0.65;
 }
