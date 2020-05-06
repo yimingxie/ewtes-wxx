@@ -57,6 +57,8 @@ App({
     unionId: '',
     cloudID: '',
     healthCode: '',
-    token: 'ggg'
+    token: 'ggg',
+    corpId: '', // 商户专属二维码的传参
+    fid: '', // 提交专属表单后，用于生成专属畅通码
   }
 })

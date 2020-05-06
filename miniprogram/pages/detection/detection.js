@@ -25,6 +25,7 @@ Page({
   onLoad: function (options) {
     // TODO分页 直接赋值可能有问题？
     // this.data.detParams.search = wx.getStorageSync('phoneNumber')
+
     this.setData({
       "detParams.search": wx.getStorageSync('phoneNumber')
     })

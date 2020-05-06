@@ -1,10 +1,10 @@
 import http from './http.js'
 
 // const url1 = 'http://192.168.100.45:8007/ewtes/wx'
-// const url1 = 'https://iot.gidomino.com/ewtes/wx'
+const url1 = 'https://iot.gidomino.com/ewtes/wx'
 
 // 正式版
-const url1 = 'https://www.ewtes.com/ewtes/wx'
+// const url1 = 'https://www.ewtes.com/ewtes/wx'
 
 // 体验版
 // const url1 = 'https://pt.ewtes.com/ewtes/wx'
@@ -104,6 +104,30 @@ export default {
   confirmUserV3(params) {
     return http.put(`${url1}/v3/phone`, params)
   },
+
+
+  // --张江--
+  // 获取传参表单状态
+  getZJFormStatus(params) {
+    return http.post(`${url1}/v4/corp/form`, params)
+  },
+
+  // 获取传参表单类型
+  getZJFormType(params) {
+    return http.post(`${url1}/v4/from/type`, params)
+  },
+
+  // 提交表单
+  submitZJForm(params) {
+    return http.post(`${url1}/v4/info/commit`, params)
+  },
+
+  // 导入的公司模糊查询
+  getZJCompany(params) {
+    return http.post(`${url1}/v4/corp/list`, params)
+  },
+
+
 
 
 

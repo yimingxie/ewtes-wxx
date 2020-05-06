@@ -1,0 +1,51 @@
+<!--pages/formStaff/formStaff.wxml-->
+<view class="custom-title-center" style="padding-top:{{statusBarHeight}}px">
+  <!-- <view class="custom-back" bindtap="back" style="padding-top:{{statusBarHeight}}px">
+    <image src="../../assets/images/back.png" mode="widthFix"></image>
+  </view> -->
+  <view class="wrap">员工表单</view>
+</view>
+
+<toast id="toast" params="{{toastParams}}"></toast>
+
+
+<view class="form-staff-container" style="padding-top:{{statusBarHeight+45}}px">
+  <view class="wrap">
+
+    <view class="form-box">
+
+      <view class="form-box-item">
+        <view class="form-box-item-p">是否14日重点疫区接触史</view>
+        <view class="form-box-ib" style="border-bottom: none;">
+          <!-- <input class="form-text-input" placeholder-class="input-placeholder" placeholder="请输入身份证号"/> -->
+          <view class="x-radio-box clearfix" style="margin-top: 36rpx;">
+            <view class="x-radio {{selectedRadioValue === item.value ? 'selected' : ''}}" wx:for="{{radioList}}" wx:key="*this" data-value='{{item.value}}' bindtap='selectRadio'>
+
+              <image class="x-radio-image" wx:if="{{selectedRadioValue === item.value}}" src="../../assets/images/radio-bg-on.png" mode="widthFix" data-value='{{item.value}}' catchtap='selectRadio'></image>
+              <image class="x-radio-image" wx:else src="../../assets/images/radio-bg.png" mode="widthFix" data-value='{{item.value}}' catchtap='selectRadio'></image>
+              {{item.label}}
+              
+            </view>
+          </view>
+
+        </view>
+      </view>
+
+    
+    </view>
+  
+
+    <view class="form-btn">
+      <view class="health-btn health-btn-call" bindtap="submitForm">提交</view>
+      <view class="form-ignore" bindtap="goIndex">跳过</view>
+    </view>
+  
+  </view>
+
+</view>
+
+
+
+
+
+

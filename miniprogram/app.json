@@ -9,7 +9,11 @@
     "pages/idcardCheck/idcardCheck",
     "pages/detectionTest/detection",
     "pages/agreement/agreement",
-    "pages/agreementSecret/agreementSecret"
+    "pages/agreementSecret/agreementSecret",
+    "pages/formVisitor/formVisitor",
+    "pages/searchCompany/searchCompany",
+    "pages/formStaff/formStaff"
+    
   ],
   "window": {
     "backgroundColor": "#3E78FE",

@@ -32,7 +32,12 @@
             <view class="qr-code-blank" wx:else>
               <image src="../../assets/images/qr-code-blank.png" mode="widthFix"></image>
             </view>
-          </view> 
+          </view>
+
+          <view class="qr-code-p" wx:if="{{healthCode}}">
+            <view>因公共卫生安全需要</view>
+            <view>您的信息将加密后授权给检测单位查看</view>
+          </view>
         </view>
 
 

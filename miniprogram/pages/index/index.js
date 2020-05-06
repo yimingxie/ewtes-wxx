@@ -15,6 +15,8 @@ Page({
     screenHeight: wx.getSystemInfoSync()['screenHeight'],
     programShow: false,
     returnFlag: false, // 控制页面不更新
+    personalFormShow: false,
+
 
     // --定时器--
     timer: null,
@@ -87,9 +89,23 @@ Page({
 
   // 初始化
   onLoad: function(options) {
+    console.log('-=-=-=-=-=-scene首页options: ', options)
+
+    
 
     // 首次加载，不允许show执行，置为false
     this.data.programShow = false
+
+    if (options && options.scene) {
+      // 首次加载，有参数的情况下要展示专属表单
+      this.data.personalFormShow = true
+      // 商户专属二维码
+      app.globalData.corpId = options.scene
+
+      // todo 临时处理，要删除
+      // app.globalData.corpId = (options.scene).substring(9)
+    }
+
 
     this.indexOnload(options)
   },
@@ -100,7 +116,14 @@ Page({
   onShow: function () {
     console.log('onshow展示了')
     if (this.data.programShow) {
+      wx.showLoading({
+        title: '加载中',
+      })
       console.log('onshow执行了')
+      if (app.globalData.corpId) {
+        // 第二次加载，有参数的情况下不展示专属表单
+        this.data.personalFormShow = false
+      }
       this.indexOnload()
       this.setTimer()
     }
@@ -125,9 +148,11 @@ Page({
   // 封装加载首页
   indexOnload(options) {
     const that = this
-    console.log('首页onload', app.globalData)
+    console.log('首页onload', app.globalData, options)
 
     if (this.data.returnFlag) return
+
+    console.log('app.globalData.corpId onload: ', app.globalData.corpId)
 
 
     // 云函数
@@ -145,7 +170,13 @@ Page({
     // 通过手机号缓存判断
     if (wx.getStorageSync('phoneNumber')) {
       console.log('有缓存', wx.getStorageSync('phoneNumber'))
+      wx.showLoading({
+        title: '加载中',
+      })
 
+
+
+      // --开始--
       wx.getSetting({
         success: authRes => {
           console.log('index授权列表', authRes)
@@ -166,15 +197,29 @@ Page({
                   "openid": wx.getStorageSync('openId')
                 }
                 api.getAccStatus(accParams).then(accRes => {
-                  console.log('后端授权接口', accRes)
-                  
-                  
+                  console.log('后端授权接口-=-=-', accRes)
+
+                  console.log('app.globalData.corpId', app.globalData.corpId, that.data.personalFormShow)
+
                   // ask | 0: 需要请求授权, 1: 手机号码已授权, 2: 身份证号码已授权
                   if (accRes.data.data.ask === 2) {
+
+                    // 判断是否要，跳转到专属表单页
+                    if (app.globalData.corpId && that.data.personalFormShow) {
+                      console.log('跳转到专属表单页面。。。')
+                      this.setData({
+                        personalFormShow: false
+                      })
+                      this.goPersonalForm()
+                      return
+                    }
+
+
+
                     // 获取畅通码
                     this.getHealthCode(wx.getStorageSync('phoneNumber'))
 
-                    this.setData({ 
+                    this.setData({
                       totalBtnShow: false,
                       goOcr: false,
                     })
@@ -183,7 +228,7 @@ Page({
                     // 开启定时器
                     this.setTimer()
 
-                  } 
+                  }
                   // else if (accRes.data.data.ask === 0) {
                   //   // 重置整个页面
                   //   this.setData({
@@ -198,10 +243,7 @@ Page({
 
                   // ask已各种授权，跳转到确认页面
                   else {
-                    wx.showLoading({
-                      title: '加载中',
-                    })
-                    
+
                     // 请求用户确认接口，判断是否需要确认
                     let params = {
                       "openid": wx.getStorageSync('openId'),
@@ -211,24 +253,35 @@ Page({
                       "avatar": app.globalData.userInfo.avatarUrl
                     }
                     api.getUserListV3(params).then(userRes => {
-                      wx.hideLoading()
                       console.log('确认用户列表', userRes)
                       // type | 1: 不需确认直接创建并刷新加载首页, 2: 需要跳到确认页面
                       if (userRes.data.code == 200) {
                         if (userRes.data.data.type == 1) {
                           // that.indexOnload()
+
+                          // 判断是否要，跳转到专属表单页
+                          if (app.globalData.corpId && that.data.personalFormShow) {
+                            console.log('跳转到专属表单页面。。。')
+                            this.setData({
+                              personalFormShow: false
+                            })
+                            this.goPersonalForm()
+                            return
+                          }
+
                           // 获取畅通码
                           this.getHealthCode(wx.getStorageSync('phoneNumber'))
                           // 开启定时器
                           this.setTimer()
 
-                          this.setData({ 
+                          this.setData({
                             totalBtnShow: false,
                             healthBtnShow: false,
                             goOcr: true,
                           })
                         }
                         else {
+                          wx.hideLoading()
                           this.setData({
                             totalBtnShow: true,
                             healthBtnShow: false,
@@ -248,15 +301,21 @@ Page({
                 })
 
 
+                // TODO 待清除
                 setTimeout(() => {
                   wx.hideLoading()
-                }, 300)
+                }, 3000)
 
               }
             })
           }
         }
       })
+      // --结束--
+
+
+
+      
 
 
     }
@@ -326,6 +385,38 @@ Page({
     }
 
   },
+
+
+
+
+  // 通过openapi获取到unionid
+  getUserInfo2(e) {
+    console.log(e)
+    wx.cloud.callFunction({
+      name: 'openapi',
+      data: {
+        action: 'getOpenData',
+        openData: {
+          list: [
+            e.detail.cloudID,
+          ]
+        }
+      }
+    }).then(res => {
+      console.log('[onGetUserInfo] 调用成功：', res)
+
+      this.setData({
+        userInfoResult: JSON.stringify(res.result),
+      })
+
+      wx.showToast({
+        title: '敏感数据获取成功',
+      })
+    })
+  },
+
+
+
 
   // 手机授权弹窗
   getPhoneNumber: function(e) {
@@ -554,34 +645,6 @@ Page({
     })
   },
 
-  /* pdf base64 转图片 */
-  formatImg(bodyData) {
-    if (!bodyData) return
-    let that = this
-    // let flight = this.data.flightDetail
-    let fsm = wx.getFileSystemManager();//文件管理器
-    let FILE_BASE_NAME = 'delay_certificate_'; //自定义文件名
-    let buffer = wx.base64ToArrayBuffer(bodyData);//转为Buffer数据
-    const filePath = `${wx.env.USER_DATA_PATH}/${FILE_BASE_NAME}.jpg`; //文件路径
-    fsm.writeFile({ //把图片从本来拿到
-      filePath,
-      data: buffer,
-      encoding: 'binary',
-      success() {
-        console.log('图片转化success', filePath)
-        that.setData({
-          healthCode: filePath,
-        })
-      },
-      fail() {
-        console.log('图片转化fail')
-        return (new Error('ERROR_BASE64SRC_WRITE'));
-      },
-    });
-  },
-
-
-
   // 获取畅通码
   getHealthCode(phone) {
     if (!phone) return
@@ -589,7 +652,11 @@ Page({
     let params = {
       'phone': phone
     }
+    if (app.globalData.fid) {
+      params.fid = app.globalData.fid
+    }
     api.getQr(params).then(res => {
+      wx.hideLoading()
       if (res.data.code == 200) {
         console.log('畅通码res', res)
         let qrStr = res.data.data ? res.data.data : ''
@@ -615,7 +682,79 @@ Page({
       title: '更新中',
     })
     this.indexOnload()
-  }
+  },
+
+  // 跳转到专属表单页面
+  goPersonalForm() {
+    let param = {
+      corpId: app.globalData.corpId
+    }
+    /**
+     * 1. 判断表单状态 启用或停用
+     * 2. 启用的话，判断是访客还是员工
+     */
+    api.getZJFormStatus(param).then(res => {
+      console.log('res表单状态', res.data)
+      // data: true-需要填表单 false-不需要填表单
+      if (res.data.code == 200) {
+        if (res.data.data) {
+          let paramType = {
+            phone: wx.getStorageSync('phoneNumber'),
+            unionId: wx.getStorageSync('openId'),
+            corpId: app.globalData.corpId
+          }
+
+          // 请求，判断表单类型
+          api.getZJFormType(paramType).then(res => {
+            console.log('res表单类型', res.data)
+            wx.hideLoading()
+            // data 1 : 员工类型 0 : 访客类型
+            if (res.data.data === 1) {
+              wx.navigateTo({
+                url: '../formStaff/formStaff',
+              })
+            } else {
+              wx.navigateTo({
+                url: '../formVisitor/formVisitor',
+              })
+            }
+          })
+          .catch(error => {
+            wx.hideLoading()
+            wx.showToast({
+              title: error,
+              icon: 'none'
+            })
+          })
+
+
+
+        } 
+        else {
+          // 更新首页
+          this.indexOnload()
+        }
+
+      }
+      else {
+        wx.hideLoading()
+        wx.showToast({
+          title: res.data.message,
+          icon: 'none'
+        })
+      }
+      
+
+    })
+    .catch(err => {
+      wx.hideLoading()
+      wx.showToast({
+        title: err,
+        icon: 'none'
+      })
+    })
+
+  },
 
 
 

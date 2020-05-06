@@ -65,24 +65,31 @@
 					"scene": null
 				},
 				{
-					"id": -1,
-					"name": "pages/detection/detection",
-					"pathName": "pages/detection/detection",
+					"id": 2,
+					"name": "pages/formStaff/formStaff",
+					"pathName": "pages/formStaff/formStaff",
 					"query": "",
 					"scene": null
 				},
 				{
 					"id": 3,
-					"name": "pages/idcard/idcard",
-					"pathName": "pages/idcard/idcard",
+					"name": "pages/searchCompany/searchCompany",
+					"pathName": "pages/searchCompany/searchCompany",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 4,
+					"name": "pages/formVisitor/formVisitor",
+					"pathName": "pages/formVisitor/formVisitor",
 					"query": "",
 					"scene": null
 				},
 				{
 					"id": -1,
-					"name": "pages/agreement/agreement",
-					"pathName": "pages/agreement/agreement",
-					"query": "",
+					"name": "pages/detection/detection",
+					"pathName": "pages/detection/detection",
+					"query": "name=321",
 					"scene": null
 				}
 			]
