@@ -6,11 +6,12 @@
       <view class="form-box-item">
         <view class="form-box-item-p">到访公司</view>
         <view class="form-box-ib">
-          <input class="form-text-input" value="{{companyValue}}" bindinput="searchCompany" placeholder-class="input-placeholder" placeholder="请输入到访公司名称"/>
-          <view class="search-submit-btn" bindtap="goForm">
+          <view class="search-submit-btn" catchtap="goForm">
             <view class="search-submit-split-line"></view>
             确定
           </view>
+          <input class="form-text-input" style="width: 80%" value="{{companyValue}}" bindinput="searchCompany" placeholder-class="input-placeholder" placeholder="请输入到访公司名称"/>
+          
         </view>
       </view>
 

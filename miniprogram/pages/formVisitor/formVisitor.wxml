@@ -60,7 +60,7 @@
 
     <view class="form-btn">
       <view class="health-btn health-btn-call" bindtap="submitForm">提交</view>
-      <view class="form-ignore" bindtap="goIndex">跳过</view>
+      <!-- <view class="form-ignore" bindtap="goIndex">跳过</view> -->
     </view>
   
   </view>

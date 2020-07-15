@@ -710,11 +710,17 @@ Page({
             wx.hideLoading()
             // data 1 : 员工类型 0 : 访客类型
             if (res.data.data === 1) {
-              wx.navigateTo({
+              // wx.navigateTo({
+              //   url: '../formStaff/formStaff',
+              // })
+              wx.redirectTo({
                 url: '../formStaff/formStaff',
               })
             } else {
-              wx.navigateTo({
+              // wx.navigateTo({
+              //   url: '../formVisitor/formVisitor',
+              // })
+              wx.redirectTo({
                 url: '../formVisitor/formVisitor',
               })
             }

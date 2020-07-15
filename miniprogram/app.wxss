@@ -389,5 +389,5 @@ page{
   height: 90rpx;
   font-size: 32rpx;
   color: #FFFFFF;
-  z-index: 99;
+  z-index: 9999;
 }

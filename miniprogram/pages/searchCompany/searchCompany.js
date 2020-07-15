@@ -102,6 +102,8 @@ Page({
 
   // 确定
   goForm() {
+    console.log('搜索公司确定')
+
     const pages = getCurrentPages()
     const perpage = pages[pages.length - 2]
     perpage.setData({
